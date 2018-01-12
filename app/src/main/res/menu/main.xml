@@ -22,7 +22,7 @@
     <item
         android:id="@+id/action_change_currentcy"
         android:orderInCategory="102"
-        android:title="currentcy"
+        android:title="$"
         android:icon="@drawable/ic_attach_money_white_24dp"
         app:showAsAction="always" />
 </menu>

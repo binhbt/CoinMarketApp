@@ -54,7 +54,7 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'org.jsoup:jsoup:1.11.2'
-    compile 'com.github.binhbt:Vegabase:1.3.2'
+    compile 'com.github.binhbt:Vegabase:1.3.3'
     compile 'com.android.support:design:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile libraries.supportCardView

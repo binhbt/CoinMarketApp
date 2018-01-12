@@ -20,6 +20,8 @@ import com.coin.market.BaseActivity;
 import com.coin.market.Const;
 import com.coin.market.R;
 import com.coin.market.data.net.BaseRequest;
+import com.coin.market.model.CurrentcyEnum;
+import com.coin.market.model.PerCenTageChangeEnum;
 import com.coin.market.shared.MemoryShared;
 import com.google.gson.reflect.TypeToken;
 import com.vn.fa.base.data.net.FaRequest;
@@ -28,7 +30,7 @@ import com.vn.fa.base.util.SharedPrefsUtils;
 import java.util.HashMap;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+    private Menu menu;
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
@@ -45,7 +47,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         loadCurrentSettings();
-
     }
 
     @Override
@@ -69,8 +70,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.main, menu);
-        getMenuInflater().inflate(R.menu.main, menu);
 
+        getMenuInflater().inflate(R.menu.main, menu);
+        this.menu = menu;
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
@@ -95,6 +97,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 setItemsVisibility(menu, searchItem, !b);
             }
         });
+        updateSettingView();
         return true;
     }
     private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {
@@ -164,6 +167,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         SharedPrefsUtils.setIntegerPreference(MainActivity.this, Const.SORT_BY, which);
+                        loadCurrentSettings();
+                        updateSettingView();
                     }
                 });
 
@@ -183,7 +188,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         SharedPrefsUtils.setIntegerPreference(MainActivity.this, Const.PERCENTAGE_CHANGED, which);
-
+                        loadCurrentSettings();
+                        updateSettingView();
                     }
                 });
 
@@ -203,7 +209,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         SharedPrefsUtils.setIntegerPreference(MainActivity.this, Const.CURRENTCY, which);
-
+                        loadCurrentSettings();
+                        updateSettingView();
                     }
                 });
 
@@ -217,5 +224,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         MemoryShared.getsharedInstance().setSettingPercentageChanged(percentageChange);
         MemoryShared.getsharedInstance().setSettingCurrentCy(currentCy);
 
+    }
+    private void updateSettingView(){
+        final MenuItem timeChange = menu.findItem(R.id.action_change_time);
+        if (MemoryShared.getsharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.DAY.ordinal()){
+            timeChange.setTitle("24h");
+        }
+        if (MemoryShared.getsharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.HOUR.ordinal()){
+            timeChange.setTitle("1h");
+        }
+        if (MemoryShared.getsharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.WEEK.ordinal()){
+            timeChange.setTitle("7d");
+        }
+        final MenuItem currentcy = menu.findItem(R.id.action_change_currentcy);
+        if (MemoryShared.getsharedInstance().getSettingCurrentCy() == CurrentcyEnum.BTC.ordinal()){
+            currentcy.setTitle("฿");
+        }
+        if (MemoryShared.getsharedInstance().getSettingCurrentCy() == CurrentcyEnum.USD.ordinal()){
+            currentcy.setTitle("$");
+        }
     }
 }

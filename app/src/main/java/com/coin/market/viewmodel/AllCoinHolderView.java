@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.coin.market.R;
 import com.coin.market.model.AltCoin;
+import com.coin.market.model.CurrentcyEnum;
+import com.coin.market.shared.MemoryShared;
 import com.coin.market.util.Util;
 import com.fa.loader.widget.FAImageView;
 import com.vn.fa.adapter.multipleviewtype.BinderViewHolder;
@@ -51,8 +53,15 @@ public class AllCoinHolderView extends VegaBinderView<AltCoin> {
                     .loadImage(Util.buildThumb(data.getId()));
         holder1.txtNumber.setText(data.getRank()+"");
         holder1.txtName.setText(data.getName()+"("+data.getSymbol()+")");
-        holder1.txtPrice.setText(data.getPrice_usd()+"");
-        holder1.txtmarketCap.setText(data.getMarket_cap_usd()+"");
+        double price = data.getPrice_usd();
+        double marketcap = data.getMarket_cap_usd();
+        String currentCyUnit ="$";
+        if (MemoryShared.getsharedInstance().getSettingCurrentCy() == CurrentcyEnum.BTC.ordinal()){
+            price = data.getPrice_btc();
+            currentCyUnit ="฿";// "Ɓ";"𝕭"
+        }
+        holder1.txtPrice.setText(currentCyUnit+Util.getCurrentcyFormat(price));
+        holder1.txtmarketCap.setText("$"+Util.getCurrentcyFormat(marketcap));
         float change = data.getPercent_change_24h();
         if (change <0){
             holder1.txtChange.setTextColor(holder1.txtChange.getContext().getResources().getColor(R.color.red));

@@ -5,17 +5,21 @@ import com.vn.fa.adapter.multipleviewtype.DataBinder;
 import com.vn.fa.adapter.multipleviewtype.IViewBinder;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by leobui on 1/10/2018.
  */
 
-public class AltCoin implements IViewBinder{
+public class AltCoin extends RealmObject implements IViewBinder{
     public enum Type{
         ALL_COIN,
         FAVOURITE_COIN
     }
+    @Ignore
     private Type type;
+    @PrimaryKey
     private String id;
     private String name;
     private String symbol;
@@ -23,7 +27,7 @@ public class AltCoin implements IViewBinder{
     private double price_usd;
     private double price_btc;
     private double d_volume_usd;
-    private long market_cap_usd;
+    private double market_cap_usd;
     private double available_supply;
     private double total_supply;
     private double max_supply;
@@ -96,11 +100,11 @@ public class AltCoin implements IViewBinder{
         this.d_volume_usd = d_volume_usd;
     }
 
-    public long getMarket_cap_usd() {
+    public double getMarket_cap_usd() {
         return market_cap_usd;
     }
 
-    public void setMarket_cap_usd(long market_cap_usd) {
+    public void setMarket_cap_usd(double market_cap_usd) {
         this.market_cap_usd = market_cap_usd;
     }
 
