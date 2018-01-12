@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#616161</color>
+    <color name="colorPrimaryDark">#333232</color>
+    <color name="colorAccent">#877c80</color>
+    <color name="colorMarket">#f8f8f8</color>
+    <color name="colorMarketBg">#e7e7e7</color>
+    <color name="colorName">#292928</color>
+    <color name="colorPrice">#666663</color>
+    <color name="colorMoney">#484845</color>
+    <color name="red">#f12210</color>
+    <color name="green">#45f110</color>
+
+</resources>
