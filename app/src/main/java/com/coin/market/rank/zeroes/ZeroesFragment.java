@@ -1,6 +1,7 @@
 package com.coin.market.rank.zeroes;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -38,7 +39,13 @@ public class ZeroesFragment extends BaseFragment implements AllCoinView,
         itemDecorator.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.line_divider));
         recyclerViewWrapper.addItemDecoration(itemDecorator);
         recyclerViewWrapper.setRefreshListener(this);
-        upDateSort();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isAdded())
+                    upDateSort();
+            }
+        }, 500);
     }
 
     @Override

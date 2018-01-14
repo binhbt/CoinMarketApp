@@ -101,9 +101,9 @@ public class FavouritePresenter extends BasePresenter<FavouriteView>{
         for (Object alt:all
                 ) {
             if (alt instanceof AltCoin) {
-                //((AltCoin) alt).setFavourite(isFav(((AltCoin) alt), fav));
                 if (isFav(((AltCoin) alt), fav)){
                     ((AltCoin) alt).setType(AltCoin.Type.FAVOURITE_COIN);
+                    ((AltCoin) alt).setFavourite(true);
                     result.add(alt);
                 }
             }
@@ -126,5 +126,19 @@ public class FavouritePresenter extends BasePresenter<FavouriteView>{
         RealmResults<AltCoin> altCoins = CoinMarketApplication.realm.where(AltCoin.class).findAll();
         MemoryShared.getSharedInstance().setFavAltcointList(altCoins);
         return altCoins;
+    }
+    public void reloadFavCoin(){
+        List<Object> result = new ArrayList<>();
+        result.add(MemoryShared.getSharedInstance().getGlobalMarketCap());
+        result.addAll(MemoryShared.getSharedInstance().getAltCoinList());
+        if (result != null) {
+            if (result.size() >0) {
+                result = processForFav(result, loadAllFavouriteAltcoin());
+                getMvpView().loadDataToView(result);
+                FaLog.e("result", result.size()+"");
+            }else{
+                getMvpView().loadDataToView(new ArrayList<>());
+            }
+        }
     }
 }

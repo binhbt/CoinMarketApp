@@ -1,10 +1,14 @@
 package com.coin.market.viewmodel;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.coin.market.CoinMarketApplication;
+import com.coin.market.Const;
 import com.coin.market.R;
+import com.coin.market.detail.DetailActivity;
 import com.coin.market.event.NotifyEvent;
 import com.coin.market.model.AltCoin;
 import com.coin.market.model.CurrentcyEnum;
@@ -94,7 +98,11 @@ public class AllCoinHolderView extends VegaBinderView<AltCoin> {
         holder1.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(holder1.getContext(), DetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Const.ALT_COIN_DATA, data);
+                i.putExtras(bundle);
+                holder1.getContext().startActivity(i);
             }
         });
         View.OnClickListener itemClick = new View.OnClickListener() {

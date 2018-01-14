@@ -1,6 +1,7 @@
 package com.coin.market.rank.heroes;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -40,7 +41,15 @@ public class HeroesFragment extends BaseFragment implements AllCoinView,
         itemDecorator.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.line_divider));
         recyclerViewWrapper.addItemDecoration(itemDecorator);
         recyclerViewWrapper.setRefreshListener(this);
-        upDateSort();
+        //Delay for smooth
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isAdded())
+                upDateSort();
+            }
+        }, 100);
+
     }
 
     @Override

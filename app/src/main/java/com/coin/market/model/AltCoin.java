@@ -5,6 +5,8 @@ import com.coin.market.viewmodel.FavCoinHolderView;
 import com.vn.fa.adapter.multipleviewtype.DataBinder;
 import com.vn.fa.adapter.multipleviewtype.IViewBinder;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -13,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by leobui on 1/10/2018.
  */
 
-public class AltCoin extends RealmObject implements IViewBinder{
+public class AltCoin extends RealmObject implements IViewBinder, Serializable{
     public enum Type{
         ALL_COIN,
         FAVOURITE_COIN

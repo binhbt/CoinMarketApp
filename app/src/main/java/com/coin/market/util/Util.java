@@ -11,6 +11,9 @@ public class Util {
     public static String buildThumb(String id){
         return "https://files.coinmarketcap.com/static/img/coins/64x64/"+id+".png";
     }
+    public static String buildDetail(String id){
+        return "https://coinmarketcap.com/currencies/"+id;
+    }
     public static String getCurrentcyFormat(double num){
         if (num <1000){
 /*            if (num>=1){

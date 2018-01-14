@@ -9,6 +9,7 @@ import com.coin.market.BaseFragment;
 import com.coin.market.R;
 import com.coin.market.event.NotifyEvent;
 import com.coin.market.event.SearchNotify;
+import com.coin.market.home.fav.FavouritePresenter;
 import com.coin.market.model.AltCoin;
 import com.coin.market.model.GlobalMarketCap;
 import com.coin.market.shared.MemoryShared;
@@ -83,7 +84,9 @@ public class AllCoinFargment extends BaseFragment implements AllCoinView,
                 upDateSort();
             }
             if (evt.getType() == NotifyEvent.Type.ALL_REFRESH){
-                onRefresh();
+                //onRefresh();
+                ((AllCoinPresenter)presenter).reloadAllCoin();
+
             }
         }
         if (event instanceof SearchNotify){
@@ -113,7 +116,8 @@ public class AllCoinFargment extends BaseFragment implements AllCoinView,
         for (AltCoin altCoin:all
              ) {
             if (altCoin.getId().toLowerCase().contains(query.toLowerCase())
-                    || altCoin.getName().toLowerCase().contains(query.toLowerCase())){
+                    || altCoin.getName().toLowerCase().contains(query.toLowerCase())
+                    ||altCoin.getSymbol().toLowerCase().contains(query.toLowerCase())){
                 altCoin.setType(AltCoin.Type.ALL_COIN);
                 result.add(altCoin);
             }
@@ -129,5 +133,8 @@ public class AllCoinFargment extends BaseFragment implements AllCoinView,
             faAdapter.addAllDataObject(viewBinders);
         }
     }
-
+    @Override
+    protected boolean isListenOnSleep() {
+        return true;
+    }
 }

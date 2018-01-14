@@ -1,5 +1,6 @@
 package com.coin.market.home.all;
 
+import com.coin.market.CoinMarketApplication;
 import com.coin.market.data.net.BaseRequest;
 import com.coin.market.data.net.CoinMarketRequestFactory;
 import com.coin.market.model.AltCoin;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
+import io.realm.RealmResults;
 
 /**
  * Created by t430 on 1/9/2018.
@@ -96,8 +98,10 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
         if (fav == null || fav.size() ==0) return all;
         for (Object alt:all
              ) {
-            if (alt instanceof AltCoin)
-                ((AltCoin)alt).setFavourite(isFav(((AltCoin)alt), fav));
+            if (alt instanceof AltCoin) {
+                ((AltCoin) alt).setType(AltCoin.Type.ALL_COIN);
+                ((AltCoin) alt).setFavourite(isFav(((AltCoin) alt), fav));
+            }
 
         }
         return all;
@@ -111,5 +115,24 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
             }
         }
         return false;
+    }
+    public List<AltCoin> loadAllFavouriteAltcoin(){
+        RealmResults<AltCoin> altCoins = CoinMarketApplication.realm.where(AltCoin.class).findAll();
+        MemoryShared.getSharedInstance().setFavAltcointList(altCoins);
+        return altCoins;
+    }
+    public void reloadAllCoin(){
+        List<Object> result = new ArrayList<>();
+        result.add(MemoryShared.getSharedInstance().getGlobalMarketCap());
+        result.addAll(MemoryShared.getSharedInstance().getAltCoinList());
+        if (result != null) {
+            if (result.size() >0) {
+                result = processForFav(result, loadAllFavouriteAltcoin());
+                getMvpView().loadDataToView(result);
+                FaLog.e("result", result.size()+"");
+            }else{
+                getMvpView().loadDataToView(new ArrayList<>());
+            }
+        }
     }
 }

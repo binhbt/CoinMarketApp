@@ -92,7 +92,8 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView,
                 upDateSort();
             }
             if (evt.getType() == NotifyEvent.Type.FAV_REFRESH) {
-                onRefresh();
+                //onRefresh();
+                ((FavouritePresenter)presenter).reloadFavCoin();
             }
         }
     }
@@ -112,5 +113,10 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView,
             List<IViewBinder> viewBinders = (List<IViewBinder>) (List) coinList;
             faAdapter.addAllDataObject(viewBinders);
         }
+    }
+
+    @Override
+    protected boolean isListenOnSleep() {
+        return true;
     }
 }
