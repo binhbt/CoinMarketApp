@@ -1,11 +1,11 @@
 package com.coin.market.main;
 
-import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,20 +19,22 @@ import android.view.View;
 import com.coin.market.BaseActivity;
 import com.coin.market.Const;
 import com.coin.market.R;
-import com.coin.market.data.net.BaseRequest;
+import com.coin.market.event.NotifyEvent;
+import com.coin.market.event.SearchNotify;
+import com.coin.market.global.GlobalDataFragment;
+import com.coin.market.home.HomeFragment;
 import com.coin.market.model.CurrentcyEnum;
 import com.coin.market.model.PerCenTageChangeEnum;
+import com.coin.market.model.SortByEnum;
+import com.coin.market.rank.RankFragment;
 import com.coin.market.shared.MemoryShared;
-import com.google.gson.reflect.TypeToken;
-import com.vn.fa.base.data.net.FaRequest;
 import com.vn.fa.base.util.SharedPrefsUtils;
 
-import java.util.HashMap;
-
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements MainView, NavigationView.OnNavigationItemSelectedListener {
     private Menu menu;
     @Override
     protected void initView(Bundle savedInstanceState) {
+        presenter = new MainPresenter();
         super.initView(savedInstanceState);
         testRequest();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -47,6 +49,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         loadCurrentSettings();
+        ((MainPresenter)presenter).loadAllFavouriteAltcoin();
+        showFragment(new HomeFragment(), null, R.id.main_content);
     }
 
     @Override
@@ -97,6 +101,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 setItemsVisibility(menu, searchItem, !b);
             }
         });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                sendEvent(new SearchNotify(query));
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                sendEvent(new SearchNotify(query));
+                return true;
+            }
+
+        });
         updateSettingView();
         return true;
     }
@@ -135,18 +154,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
+            showFragment(new HomeFragment(), null, R.id.main_content);
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_rank) {
+            showFragment(new RankFragment(), null, R.id.main_content);
+        } else if (id == R.id.nav_global) {
+            showFragment(new GlobalDataFragment(), null, R.id.main_content);
 
         } else if (id == R.id.nav_share) {
-
+            shareApp();
         } else if (id == R.id.nav_send) {
-
+            rateApp();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -169,6 +188,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         SharedPrefsUtils.setIntegerPreference(MainActivity.this, Const.SORT_BY, which);
                         loadCurrentSettings();
                         updateSettingView();
+                        sendEvent(new NotifyEvent(NotifyEvent.Type.CHANGE_SORT_SETTING));
                     }
                 });
 
@@ -190,6 +210,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         SharedPrefsUtils.setIntegerPreference(MainActivity.this, Const.PERCENTAGE_CHANGED, which);
                         loadCurrentSettings();
                         updateSettingView();
+                        sendEvent(new NotifyEvent(NotifyEvent.Type.CHANGE_SETTING));
+
                     }
                 });
 
@@ -211,37 +233,112 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         SharedPrefsUtils.setIntegerPreference(MainActivity.this, Const.CURRENTCY, which);
                         loadCurrentSettings();
                         updateSettingView();
+                        sendEvent(new NotifyEvent(NotifyEvent.Type.CHANGE_SETTING));
                     }
                 });
 
         builder.create().show();
     }
     private void loadCurrentSettings(){
-        int sort = SharedPrefsUtils.getIntegerPreference(MainActivity.this, Const.SORT_BY, 0);
+        int sort = SharedPrefsUtils.getIntegerPreference(MainActivity.this, Const.SORT_BY, SortByEnum.MARKETCAP.ordinal());
         int percentageChange = SharedPrefsUtils.getIntegerPreference(MainActivity.this, Const.PERCENTAGE_CHANGED, 0);
         int currentCy = SharedPrefsUtils.getIntegerPreference(MainActivity.this, Const.CURRENTCY, 0);
-        MemoryShared.getsharedInstance().setSettingSort(sort);
-        MemoryShared.getsharedInstance().setSettingPercentageChanged(percentageChange);
-        MemoryShared.getsharedInstance().setSettingCurrentCy(currentCy);
-
+        MemoryShared.getSharedInstance().setSettingSort(sort);
+        MemoryShared.getSharedInstance().setSettingPercentageChanged(percentageChange);
+        MemoryShared.getSharedInstance().setSettingCurrentCy(currentCy);
     }
     private void updateSettingView(){
         final MenuItem timeChange = menu.findItem(R.id.action_change_time);
-        if (MemoryShared.getsharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.DAY.ordinal()){
+        if (MemoryShared.getSharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.DAY.ordinal()){
             timeChange.setTitle("24h");
         }
-        if (MemoryShared.getsharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.HOUR.ordinal()){
+        if (MemoryShared.getSharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.HOUR.ordinal()){
             timeChange.setTitle("1h");
         }
-        if (MemoryShared.getsharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.WEEK.ordinal()){
+        if (MemoryShared.getSharedInstance().getSettingPercentageChanged() == PerCenTageChangeEnum.WEEK.ordinal()){
             timeChange.setTitle("7d");
         }
         final MenuItem currentcy = menu.findItem(R.id.action_change_currentcy);
-        if (MemoryShared.getsharedInstance().getSettingCurrentCy() == CurrentcyEnum.BTC.ordinal()){
+        if (MemoryShared.getSharedInstance().getSettingCurrentCy() == CurrentcyEnum.BTC.ordinal()){
             currentcy.setTitle("฿");
+            currentcy.setIcon(R.drawable.bitcoin);
         }
-        if (MemoryShared.getsharedInstance().getSettingCurrentCy() == CurrentcyEnum.USD.ordinal()){
+        if (MemoryShared.getSharedInstance().getSettingCurrentCy() == CurrentcyEnum.USD.ordinal()){
             currentcy.setTitle("$");
+            currentcy.setIcon(R.drawable.ic_monetization_on_white_24dp);
+
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    @Override
+    public void handleEvent(Object event) {
+        super.handleEvent(event);
+        if (event instanceof NotifyEvent){
+            final MenuItem search = menu.findItem(R.id.action_search);
+            final SearchView searchView = (SearchView) search.getActionView();
+
+            NotifyEvent evt =(NotifyEvent) event;
+            if (evt.getType() == NotifyEvent.Type.SHOW_SEARCH){
+                search.setVisible(true);
+                searchView.setVisibility(View.VISIBLE);
+            }
+            if (evt.getType() == NotifyEvent.Type.HIDE_SEARCH){
+                search.setVisible(false);
+                searchView.setVisibility(View.GONE);
+                searchView.clearFocus();
+            }
+        }
+    }
+    public void settitleBar(String title){
+        getSupportActionBar().setTitle(title);
+    }
+    public void changeToolBarForRank(){
+        if (menu == null) return;
+        final MenuItem search = menu.findItem(R.id.action_search);
+        final MenuItem sort = menu.findItem(R.id.action_sort);
+        search.setVisible(false);
+        sort.setVisible(false);
+    }
+    public void showAllToolBar(){
+        if (menu == null) return;
+        for (int i=0; i<menu.size(); ++i) {
+            MenuItem item = menu.getItem(i);
+            item.setVisible(true);
+        }
+    }
+    public void hideAllToolBar(){
+        if (menu == null) return;
+        for (int i=0; i<menu.size(); ++i) {
+            MenuItem item = menu.getItem(i);
+            item.setVisible(false);
+        }
+    }
+    private void shareApp(){
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                "Hey check out my app at: https://play.google.com/store/apps/details?id="+getApplicationContext().getPackageName());
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+    private void rateApp(){
+        Uri uri = Uri.parse("market://details?id=" + getApplication().getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getApplication().getPackageName())));
         }
     }
 }

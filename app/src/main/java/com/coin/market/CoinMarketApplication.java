@@ -7,6 +7,7 @@ import com.vn.fa.base.data.cache.rxcache.RxCacheAdapterFactory;
 import com.vn.fa.base.util.FaLog;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -16,6 +17,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class CoinMarketApplication extends FaApplication {
     public static FaApplication faApplication;
     public static RxCacheAdapterFactory cacheProviders;
+    public static Realm realm;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -28,9 +30,16 @@ public class CoinMarketApplication extends FaApplication {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
+        initDb();
     }
     private void initDb(){
         Realm.init(this);
+
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        // Clear the realm from last time
+        //Realm.deleteRealm(realmConfiguration);
+        // Create a new empty instance of Realm
+        realm = Realm.getInstance(realmConfiguration);
     }
     public static CacheProviders getCacheProviders(){
         if (cacheProviders == null){

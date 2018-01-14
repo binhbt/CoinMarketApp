@@ -29,4 +29,7 @@ public class BaseFragment extends FaFragment implements MvpView{
             presenter.detachView();
         super.onDestroyView();
     }
+    protected boolean isShowNoNetWork(){
+        return false;
+    }
 }

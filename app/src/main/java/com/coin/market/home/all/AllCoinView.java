@@ -10,5 +10,5 @@ import java.util.List;
  */
 
 public interface AllCoinView extends BaseMvpView{
-    void loadDataToView(List<AltCoin> coinList);
+    void loadDataToView(List<Object> coinList);
 }

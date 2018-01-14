@@ -1,20 +1,25 @@
 package com.coin.market.viewmodel;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
+import com.coin.market.CoinMarketApplication;
 import com.coin.market.R;
+import com.coin.market.event.NotifyEvent;
 import com.coin.market.model.AltCoin;
 import com.coin.market.model.CurrentcyEnum;
+import com.coin.market.model.PerCenTageChangeEnum;
 import com.coin.market.shared.MemoryShared;
 import com.coin.market.util.Util;
 import com.fa.loader.widget.FAImageView;
+import com.varunest.sparkbutton.SparkButton;
 import com.vn.fa.adapter.multipleviewtype.BinderViewHolder;
 import com.vn.fa.base.holder.VegaBinderView;
 import com.vn.fa.base.holder.VegaViewHolder;
 
 import butterknife.Bind;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by t430 on 1/9/2018.
@@ -56,36 +61,70 @@ public class AllCoinHolderView extends VegaBinderView<AltCoin> {
         double price = data.getPrice_usd();
         double marketcap = data.getMarket_cap_usd();
         String currentCyUnit ="$";
-        if (MemoryShared.getsharedInstance().getSettingCurrentCy() == CurrentcyEnum.BTC.ordinal()){
+        if (MemoryShared.getSharedInstance().getSettingCurrentCy() == CurrentcyEnum.BTC.ordinal()){
             price = data.getPrice_btc();
             currentCyUnit ="฿";// "Ɓ";"𝕭"
         }
         holder1.txtPrice.setText(currentCyUnit+Util.getCurrentcyFormat(price));
         holder1.txtmarketCap.setText("$"+Util.getCurrentcyFormat(marketcap));
         float change = data.getPercent_change_24h();
+        if (MemoryShared.getSharedInstance().getSettingPercentageChanged()
+                == PerCenTageChangeEnum.HOUR.ordinal()){
+            change = data.getPercent_change_1h();
+        }
+        if (MemoryShared.getSharedInstance().getSettingPercentageChanged()
+                == PerCenTageChangeEnum.WEEK.ordinal()){
+            change = data.getPercent_change_7d();
+        }
         if (change <0){
             holder1.txtChange.setTextColor(holder1.txtChange.getContext().getResources().getColor(R.color.red));
         }else{
             holder1.txtChange.setTextColor(holder1.txtChange.getContext().getResources().getColor(R.color.green));
         }
-        holder1.txtChange.setText(data.getPercent_change_24h()+"");
+        if (data.isFavourite()){
+            holder1.btnFav.setChecked(true);
+            //holder1.btnFav.setBackgroundResource(R.drawable.ic_star_fill);
+        }else{
+            holder1.btnFav.setChecked(false);
+            //holder1.btnFav.setBackgroundResource(R.drawable.ic_star_border_black_24dp);
+        }
+        holder1.txtChange.setSelected(true);
+        holder1.txtmarketCap.setSelected(true);
+        holder1.txtChange.setText(Util.getChangeString(change));
         holder1.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
             }
         });
-        holder1.btnFav.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener itemClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder1.btnFav.setBackgroundResource(R.drawable.ic_star_fill);
+                if (!data.isFavourite()) {
+                    holder1.btnFav.setChecked(true);
+                    holder1.btnFav.playAnimation();
+                    //holder1.btnFav.setBackgroundResource(R.drawable.ic_star_fill);
+                    data.setFavourite(true);
+                    CoinMarketApplication.realm.beginTransaction();
+                    CoinMarketApplication.realm.copyToRealm(data);
+                    CoinMarketApplication.realm.commitTransaction();
+                }else{
+                    //holder1.btnFav.setBackgroundResource(R.drawable.ic_star_border_black_24dp);
+                    holder1.btnFav.setChecked(false);
+                    data.setFavourite(false);
+                    CoinMarketApplication.realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            RealmResults<AltCoin> result = realm.where(AltCoin.class).equalTo("id",data.getId()).findAll();
+                            result.deleteAllFromRealm();
+                        }
+                    });
+                }
+                sendEvent(new NotifyEvent(NotifyEvent.Type.FAV_REFRESH));
             }
-        });
-        holder1.viewFav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder1.btnFav.setBackgroundResource(R.drawable.ic_star_fill);
-            }
-        });
+        };
+        holder1.btnFav.setOnClickListener(itemClick);
+        holder1.viewFav.setOnClickListener(itemClick);
     }
 
 
@@ -113,7 +152,7 @@ public class AllCoinHolderView extends VegaBinderView<AltCoin> {
         @Bind(R.id.txt_change)
         TextView txtChange;
         @Bind(R.id.btn_fav)
-        Button btnFav;
+        SparkButton btnFav;
         @Bind(R.id.view_fav)
         View viewFav;
         public PhotoViewHolder(View view) {

@@ -23,6 +23,6 @@
         android:id="@+id/action_change_currentcy"
         android:orderInCategory="102"
         android:title="$"
-        android:icon="@drawable/ic_attach_money_white_24dp"
+        android:icon="@drawable/ic_monetization_on_white_24dp"
         app:showAsAction="always" />
 </menu>

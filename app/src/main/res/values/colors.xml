@@ -3,6 +3,7 @@
     <color name="colorPrimary">#616161</color>
     <color name="colorPrimaryDark">#333232</color>
     <color name="colorAccent">#877c80</color>
+    <color name="colorRank">#483548</color>
     <color name="colorMarket">#f8f8f8</color>
     <color name="colorMarketBg">#e7e7e7</color>
     <color name="colorName">#292928</color>

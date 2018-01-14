@@ -9,8 +9,10 @@ import android.support.v4.view.ViewPager;
 
 import com.coin.market.BaseFragment;
 import com.coin.market.R;
+import com.coin.market.event.NotifyEvent;
 import com.coin.market.home.all.AllCoinFargment;
 import com.coin.market.home.fav.FavouriteFragment;
+import com.coin.market.main.MainActivity;
 
 /**
  * Created by t430 on 1/7/2018.
@@ -23,10 +25,34 @@ public class HomeFragment extends BaseFragment{
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) root.findViewById(R.id.viewpager);
         viewPager.setAdapter(new SampleFragmentPagerAdapter(getChildFragmentManager()));
-
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) root.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position ==0){
+                    sendEvent(new NotifyEvent(NotifyEvent.Type.SHOW_SEARCH));
+                }
+                if (position == 1){
+                    sendEvent(new NotifyEvent(NotifyEvent.Type.HIDE_SEARCH));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        if (getActivity() != null){
+            ((MainActivity)getActivity()).setTitle("Home");
+            ((MainActivity)getActivity()).showAllToolBar();
+        }
     }
 
     @Override

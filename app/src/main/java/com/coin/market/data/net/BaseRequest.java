@@ -66,4 +66,9 @@ public class BaseRequest  extends FaRequest {
     public Request.Factory getRequestAdapter() {
         return new StringAdtapterFactory();
     }
+
+    @Override
+    public boolean isNewInstance() {
+        return true;
+    }
 }

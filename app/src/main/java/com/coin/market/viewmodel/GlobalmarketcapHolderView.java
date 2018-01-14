@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.coin.market.R;
 import com.coin.market.model.AltCoin;
 import com.coin.market.model.GlobalMarketCap;
+import com.coin.market.util.Util;
 import com.vn.fa.adapter.multipleviewtype.BinderViewHolder;
 import com.vn.fa.base.holder.VegaBinderView;
 import com.vn.fa.base.holder.VegaViewHolder;
@@ -24,7 +25,7 @@ public class GlobalmarketcapHolderView extends VegaBinderView<GlobalMarketCap> {
     public void bindViewHolder(BinderViewHolder holder, int position) {
         GlobalmarketcapHolderView.ViewHolder holder1 = (GlobalmarketcapHolderView.ViewHolder) holder;
 
-        //holder1.title.setText(data.getName());
+        holder1.txtGlobalMarketCap.setText("Global market cap: $"+ Util.getCurrentcyFormat(data.getTotal_market_cap_usd()));
     }
 
 

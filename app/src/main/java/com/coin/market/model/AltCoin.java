@@ -1,6 +1,7 @@
 package com.coin.market.model;
 
 import com.coin.market.viewmodel.AllCoinHolderView;
+import com.coin.market.viewmodel.FavCoinHolderView;
 import com.vn.fa.adapter.multipleviewtype.DataBinder;
 import com.vn.fa.adapter.multipleviewtype.IViewBinder;
 
@@ -35,6 +36,15 @@ public class AltCoin extends RealmObject implements IViewBinder{
     private float percent_change_24h;
     private float percent_change_7d;
     private long last_updated;
+    private boolean isFavourite = false;
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
+    }
 
     public Type getType() {
         return type;
@@ -166,6 +176,9 @@ public class AltCoin extends RealmObject implements IViewBinder{
 
     @Override
     public DataBinder getViewBinder() {
-        return new AllCoinHolderView(this).itemViewType(1);
+        if (type == Type.ALL_COIN)
+        return new AllCoinHolderView(this);
+
+        return new FavCoinHolderView(this);
     }
 }

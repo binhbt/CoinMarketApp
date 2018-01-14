@@ -23,7 +23,7 @@ public class CoinMarketRequestFactory extends VegaRequestFactory {
 
     public enum CoinRequestType {
         ALL_COIN_REQUEST("ticker"),
-        USER_REQUEST("test/user_null.json"),
+        GLOBAL_MARKET_CAP("global"),
         HOME_REQUEST1("other_app1.json");
         private String text;
 
