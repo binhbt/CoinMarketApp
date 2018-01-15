@@ -108,10 +108,18 @@ public class HeroesFragment extends BaseFragment implements AllCoinView,
             faAdapter.clear();
             Collections.sort(all, new RankComparator());
             List<AltCoin> sub100 = all.subList(0, 100);
+            setupAllView(sub100);
             List<IViewBinder> viewBinders = (List<IViewBinder>) (List) sub100;
             faAdapter.addAllDataObject(viewBinders);
         }
     }
-
+    private void setupAllView(List<AltCoin> coinList){
+        for (Object item:coinList
+                ) {
+            if (item instanceof AltCoin){
+                ((AltCoin)item).setType(AltCoin.Type.ALL_COIN);
+            }
+        }
+    }
 
 }

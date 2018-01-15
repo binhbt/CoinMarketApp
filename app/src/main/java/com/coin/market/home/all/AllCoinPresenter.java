@@ -34,11 +34,13 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
         final FaRequest request1 = CoinMarketRequestFactory.getInstance().getRequest(CoinMarketRequestFactory.CoinRequestType.GLOBAL_MARKET_CAP)
                 .params(new HashMap<>())
                 .requesAdaptert(new RetrofitAdapterFactory())
+                .container(getMvpView())
                 .dataType(new TypeToken<GlobalMarketCap>() {}.getType());
 
         final FaRequest request2 = CoinMarketRequestFactory.getInstance().getRequest(CoinMarketRequestFactory.CoinRequestType.ALL_COIN_REQUEST)
                 .params(new HashMap<>())
                 .addParams("limit", "0")
+                .container(getMvpView())
                 .dataType(new TypeToken<String>() {}.getType());
         BaseRequest mixRequest = new BaseRequest(){
             @Override
@@ -52,11 +54,11 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
                                     replaceAll("null","0");
                             Type type = new TypeToken<List<AltCoin>>() {}.getType();
                             List<AltCoin> altList = new Gson().fromJson(result, type);
-                            for (AltCoin alt:altList
+/*                            for (AltCoin alt:altList
                                     ) {
                                 alt.setType(AltCoin.Type.ALL_COIN);
                                 //FaLog.e(alt.getName());
-                            }
+                            }*/
                             Collections.sort(altList, new CustomComparator());
                             MemoryShared.getSharedInstance().setAltCoinList(altList);
                             MemoryShared.getSharedInstance().setGlobalMarketCap(globalMarketCap);
@@ -98,6 +100,7 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
                         }
                     }
                 })
+                .container(getMvpView())
                 .doRequest();
     }
     private List<Object> processForFav(List<Object> all, List<AltCoin> fav){

@@ -18,9 +18,18 @@ android {
             }
         }
     }
+    signingConfigs {
+        release {
+            storeFile file("D:\\Projects\\bip_alias_bip.jks")
+            storePassword "123456"
+            keyAlias "bip"
+            keyPassword "123456"
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

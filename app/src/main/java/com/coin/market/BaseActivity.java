@@ -3,6 +3,7 @@ package com.coin.market;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.startapp.android.publish.adsCommon.StartAppAd;
 import com.startapp.android.publish.adsCommon.StartAppSDK;
 import com.vn.fa.base.mvp.BasePresenter;
 import com.vn.fa.base.mvp.MvpView;
@@ -22,6 +23,7 @@ public class BaseActivity extends FaActivity implements MvpView{
         if (presenter != null)
             presenter.attachView(this);
         StartAppSDK.init(this, "200723542", true);
+        StartAppAd.disableSplash();
     }
     @Override
     protected void attachBaseContext(Context newBase) {

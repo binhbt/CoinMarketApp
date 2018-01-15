@@ -61,13 +61,21 @@ public class AllCoinFargment extends BaseFragment implements AllCoinView,
         }
         if (coinList != null && coinList.size() >0) {
             faAdapter.clear();
+            setupAllView(coinList);
             List<IViewBinder> viewBinders = (List<IViewBinder>) (List) coinList;
             faAdapter.addAllDataObject(viewBinders);
         }else{
             faAdapter.addAllDataObject(new ArrayList<>());
         }
     }
-
+    private void setupAllView(List<Object> coinList){
+        for (Object item:coinList
+             ) {
+            if (item instanceof AltCoin){
+                ((AltCoin)item).setType(AltCoin.Type.ALL_COIN);
+            }
+        }
+    }
     @Override
     public void onRefresh() {
         ((AllCoinPresenter)presenter).loadData();
@@ -108,6 +116,7 @@ public class AllCoinFargment extends BaseFragment implements AllCoinView,
             Collections.sort(all, new CustomComparator());
             coinList.add(0, MemoryShared.getSharedInstance().getGlobalMarketCap());
             coinList.addAll(all);
+            setupAllView(coinList);
             List<IViewBinder> viewBinders = (List<IViewBinder>) (List) coinList;
             faAdapter.addAllDataObject(viewBinders);
         }

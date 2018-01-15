@@ -63,13 +63,21 @@ public class FavouriteFragment extends BaseFragment implements FavouriteView,
         }
         if (coinList != null && coinList.size() > 0) {
             faAdapter.clear();
+            setupFavView(coinList);
             List<IViewBinder> viewBinders = (List<IViewBinder>) (List) coinList;
             faAdapter.addAllDataObject(viewBinders);
         }else{
             faAdapter.addAllDataObject(new ArrayList<>());
         }
     }
-
+    private void setupFavView(List<Object> coinList){
+        for (Object item:coinList
+                ) {
+            if (item instanceof AltCoin){
+                ((AltCoin)item).setType(AltCoin.Type.FAVOURITE_COIN);
+            }
+        }
+    }
     @Override
     public void onRefresh() {
         ((FavouritePresenter) presenter).loadData();

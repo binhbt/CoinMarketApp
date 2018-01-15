@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/XTesst.iml" filepath="$PROJECT_DIR$/XTesst.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CoinMarketApp.iml" filepath="$PROJECT_DIR$/CoinMarketApp.iml" />
+      <module fileurl="file://D:\Projects\CoinMarketApp\XTesst.iml" filepath="D:\Projects\CoinMarketApp\XTesst.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

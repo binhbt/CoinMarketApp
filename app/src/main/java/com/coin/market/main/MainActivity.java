@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
         loadCurrentSettings();
         ((MainPresenter)presenter).loadAllFavouriteAltcoin();
         showFragment(new HomeFragment(), null, R.id.main_content);
+
     }
 
     @Override
