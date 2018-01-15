@@ -78,6 +78,7 @@ public class FavouritePresenter extends BasePresenter<FavouriteView>{
                     @Override
                     public void onError(Throwable t) {
                         t.printStackTrace();
+                        getMvpView().loadDataToView(new ArrayList<>());
                     }
 
                     @Override
@@ -90,6 +91,8 @@ public class FavouritePresenter extends BasePresenter<FavouriteView>{
                             }else{
                                 getMvpView().loadDataToView(new ArrayList<>());
                             }
+                        }else{
+                            getMvpView().loadDataToView(new ArrayList<>());
                         }
                     }
                 })

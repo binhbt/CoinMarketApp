@@ -1,11 +1,13 @@
 package com.coin.market;
 
+import com.crashlytics.android.Crashlytics;
 import com.fa.loader.FALoader;
 import com.vn.fa.base.FaApplication;
 import com.vn.fa.base.data.cache.CacheProviders;
 import com.vn.fa.base.data.cache.rxcache.RxCacheAdapterFactory;
 import com.vn.fa.base.util.FaLog;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -31,6 +33,7 @@ public class CoinMarketApplication extends FaApplication {
                 .build()
         );
         initDb();
+        Fabric.with(this, new Crashlytics());
     }
     private void initDb(){
         Realm.init(this);

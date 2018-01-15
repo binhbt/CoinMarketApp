@@ -63,6 +63,8 @@ public class AllCoinFargment extends BaseFragment implements AllCoinView,
             faAdapter.clear();
             List<IViewBinder> viewBinders = (List<IViewBinder>) (List) coinList;
             faAdapter.addAllDataObject(viewBinders);
+        }else{
+            faAdapter.addAllDataObject(new ArrayList<>());
         }
     }
 

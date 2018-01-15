@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -32,8 +33,12 @@ android {
 buildscript {
     repositories {
         mavenCentral()
-    }
+        maven { url 'https://maven.fabric.io/public' }
 
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
     }
@@ -41,11 +46,14 @@ buildscript {
 // Required because retrolambda is on maven central
 repositories {
     mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+
 }
 realm {
     syncEnabled = true;
 }
 //apply plugin: 'com.android.application' //or apply plugin: 'java'
+apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -54,10 +62,14 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'org.jsoup:jsoup:1.11.2'
-    compile 'com.github.binhbt:Vegabase:1.3.3'
+    compile 'com.github.binhbt:Vegabase:1.3.5'
     compile 'com.android.support:design:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile libraries.supportCardView
     compile 'uk.co.chrisjenx:calligraphy:2.3.0'
     compile 'com.github.varunest:sparkbutton:1.0.5'
+    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+        transitive = true;
+    }
+    compile 'com.startapp:inapp-sdk:3.6.9'
 }

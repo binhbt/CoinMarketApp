@@ -70,6 +70,7 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
             }
         };
         mixRequest
+                .cache(false)
                 .callBack(new RequestCallBack<List<Object>>() {
                     @Override
                     public void onStart() {
@@ -79,6 +80,7 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
                     @Override
                     public void onError(Throwable t) {
                         t.printStackTrace();
+                        getMvpView().loadDataToView(new ArrayList<>());
                     }
 
                     @Override
@@ -88,7 +90,11 @@ public class AllCoinPresenter extends BasePresenter<AllCoinView>{
                                 result = processForFav(result, MemoryShared.getSharedInstance().getFavAlcointList());
                                 getMvpView().loadDataToView(result);
                                 FaLog.e("result", result.size()+"");
+                            }else{
+                                getMvpView().loadDataToView(new ArrayList<>());
                             }
+                        }else{
+                            getMvpView().loadDataToView(new ArrayList<>());
                         }
                     }
                 })

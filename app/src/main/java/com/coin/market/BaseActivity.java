@@ -3,6 +3,7 @@ package com.coin.market;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.startapp.android.publish.adsCommon.StartAppSDK;
 import com.vn.fa.base.mvp.BasePresenter;
 import com.vn.fa.base.mvp.MvpView;
 import com.vn.fa.base.ui.FaActivity;
@@ -20,6 +21,7 @@ public class BaseActivity extends FaActivity implements MvpView{
     protected void initView(Bundle savedInstanceState) {
         if (presenter != null)
             presenter.attachView(this);
+        StartAppSDK.init(this, "200723542", true);
     }
     @Override
     protected void attachBaseContext(Context newBase) {
