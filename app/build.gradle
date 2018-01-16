@@ -20,7 +20,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("D:\\Projects\\bip_alias_bip.jks")
+            storeFile file("E:\\bip_bip.jks")
             storePassword "123456"
             keyAlias "bip"
             keyPassword "123456"
