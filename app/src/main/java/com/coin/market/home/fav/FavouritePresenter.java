@@ -6,6 +6,7 @@ import com.coin.market.data.net.CoinMarketRequestFactory;
 import com.coin.market.model.AltCoin;
 import com.coin.market.model.GlobalMarketCap;
 import com.coin.market.shared.MemoryShared;
+import com.coin.market.sort.CustomComparator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vn.fa.base.data.net.FaRequest;
@@ -15,6 +16,7 @@ import com.vn.fa.base.util.FaLog;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,6 +59,7 @@ public class FavouritePresenter extends BasePresenter<FavouriteView>{
                                 alt.setType(AltCoin.Type.ALL_COIN);
                                 //FaLog.e(alt.getName());
                             }*/
+                            Collections.sort(altList, new CustomComparator());
                             MemoryShared.getSharedInstance().setAltCoinList(altList);
                             MemoryShared.getSharedInstance().setGlobalMarketCap(globalMarketCap);
 

@@ -124,5 +124,11 @@
                 android:layout_height="wrap_content"
                 android:text="" />
         </LinearLayout>
+        <com.startapp.android.publish.ads.banner.Banner
+            android:id="@+id/startAppBanner"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"/>
     </LinearLayout>
 </ScrollView>
